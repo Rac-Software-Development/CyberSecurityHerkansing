@@ -47,6 +47,17 @@ def decodetoken(token):
     except jwt.InvalidTokenError:
         return None
 
+def get_user_token():
+    token = request.headers.get("Authorization")
+    if not token:
+        return None
+
+    data = decodetoken(token)
+    if not data:
+        return None
+
+    return data
+
 @app.route('/')
 def home_page():
    return render_template('home_page.html')
@@ -122,7 +133,7 @@ def get_db_connection():
 @app.route('/login_screen', methods=['GET', 'POST'])
 def login_screen():
     if request.method == "POST":
-        tries = session.get("logintries", 0)
+        tries = session.get("login_tries", 0)
         if tries >= 5:
             flash("te veel mislukte pogingen probeer het later opnieuw", "error")
             return redirect(url_for("login_screen"))
@@ -176,7 +187,7 @@ def login_screen():
 
 @app.route('/welcome')
 def welcome():
-    if 'user_id' not in session:
+    if not checkloggedin():
         flash('You are not logged in!', 'danger')
         return redirect(url_for('login_screen'))
 
@@ -308,15 +319,27 @@ def clean_prompt(prompt_with_error_margin):
     return prompt_with_error_margin.split(" - ", 1)[-1]
 
 def check_user_is_admin():
+    user_data = get_user_token()
+    if user_data and user_data.get("is_admin"):
+        return True
+
     if 'admin' not in session:
         return False
-    elif not session["admin"]:
+    if not session.get("admin"):
         return False
 
     return True
 
+def checkloggedin():
+    user_data = get_user_token()
+    if user_data:
+        return True
+    return 'user_id' in session
+
 @app.route('/export_vragen', methods=['POST','GET'])
 def export_vragen():
+    if not check_user_is_admin():
+        return "niet ingelogd of niet ingelogd als admin"
     if request.method == 'POST':
         download_json = request.form['export_option'] == "1"
         has_tax = request.form.get('has_tax')
@@ -339,12 +362,16 @@ def export_vragen():
 
 @app.route('/prompt_overview', methods=['GET', 'POST'])
 def prompt_tabel():
+    if not check_user_is_admin():
+        return "niet ingelogd of niet ingelogd als admin"
     all_prompts = prompt_overview()
 
     return render_template("prompt_tabel.html", all_prompts=all_prompts)
 
 @app.route('/prompt_input', methods=['GET', 'POST'])
 def prompt_input():
+    if not check_user_is_admin():
+        return "niet ingelogd of niet ingelogd als admin"
     if request.method == 'POST':
         try:
             prompt_title = request.form['prompt_title'].strip()
@@ -367,12 +394,16 @@ def prompt_input():
 
 @app.route('/prompt_verwijderen', methods=['GET', 'POST'])
 def prompt_verwijderen():
+    if not check_user_is_admin():
+        return "niet ingelogd of niet ingelogd als admin"
     all_prompts = prompt_overview()
 
     return render_template("prompt_verwijderen.html", all_prompts=all_prompts)
 
 @app.route('/delete_prompt/<prompt_id>', methods=['GET', 'POST'])
 def delete_prompt_id(prompt_id):
+    if not check_user_is_admin():
+        return "niet ingelogd of niet ingelogd als admin"
     if check_user_is_admin():
         if request.method == 'POST':
             delete_option = request.form['delete_option']
@@ -395,6 +426,13 @@ def delete_prompt_id(prompt_id):
         return redirect(url_for('prompt_verwijderen'))
     else:
         return "Niet ingelogd of geen admin"
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    resp = redirect(url_for("login_screen"))
+    resp.delete_cookie("auth_token")
+    return resp
 
 if __name__ == "__main__":
     app.run(debug=True)
