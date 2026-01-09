@@ -23,6 +23,29 @@ from werkzeug.security import check_password_hash
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "development-secret-change-this")
 
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRE_HOURS = 3
+
+def createToken(user_id, is_admin):
+    payload = {
+        "user_id": user_id,
+        "is_admin": bool(is_admin),
+        "exp": datetime.utcnow() + timedelta(hours=JWT_EXPIRE_HOURS),
+        "iat": datetime.utcnow()
+    }
+    token = jwt.encode(payload, app.secret_key, algorithm=JWT_ALGORITHM)
+    if isinstance(token, bytes):
+        token = token.decode("utf-8")
+    return token
+
+def decodetoken(token):
+    try:
+        data = jwt.decode(token, app.secret_key, algorithms=[JWT_ALGORITHM])
+        return data
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
 
 @app.route('/')
 def home_page():
@@ -126,6 +149,18 @@ def login_screen():
                 session['username'] = user['login']
                 session["admin"] = user["is_admin"] == 1
                 session["login_tries"] = 0
+
+                token = createToken(user["user_id"], user["is_admin"])
+                flash('Logged in', 'success')
+                resp = redirect(url_for('toetsvragenScherm'))
+                resp.set_cookie(
+                    "auth_token",
+                    token,
+                    httponly=True,
+                    samesite="Lax"
+                )
+                return resp
+
                 flash('logged in', 'success')
                 return redirect(url_for('toetsvragenScherm'))
             else:
