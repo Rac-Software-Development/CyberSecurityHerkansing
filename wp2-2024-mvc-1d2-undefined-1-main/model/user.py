@@ -1,5 +1,5 @@
 from model.database import Database
-
+from werkzeug.security import generate_password_hash
 
 class User():
     def __init__(self):
@@ -37,6 +37,7 @@ class User():
         return result
 
     def create_user(self, login, password, display_name, is_admin):
+        hashed_password = generate_password_hash(password)
         self.cursor.execute(
             "INSERT into users (login, password, display_name, is_admin) VALUES (?, ?, ?, ?)",
             (login, password, display_name, is_admin))
@@ -45,6 +46,7 @@ class User():
         return True
 
     def update_user(self, user_id, login, password, display_name, is_admin):
+        hashed_password = generate_password_hash(password)
         self.cursor.execute(
             'UPDATE users SET login = ?, password = ?, display_name = ?, is_admin = ? WHERE user_id = ?',
             (login, password, display_name, is_admin, user_id)

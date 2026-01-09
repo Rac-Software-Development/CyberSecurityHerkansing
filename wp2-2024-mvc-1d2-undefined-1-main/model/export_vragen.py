@@ -5,29 +5,33 @@ def export_question_to_json(save, has_tax, start_date, end_date, mark_exported, 
     database = Database('./databases/database.db')
     cursor, conn = database.connect_db()
 
-    select_query = "SELECT questions_id, prompts_id, user_id, question, taxonomy_bloom, rtti, exported, date_created FROM questions"
-    if has_tax and start_date and end_date:
-        select_query += " WHERE (taxonomy_bloom IS NOT NULL OR rtti IS NOT NULL) AND (date_created BETWEEN '"+start_date+"' AND '"+end_date+"')"
-    elif start_date and end_date:
-        select_query += " WHERE date_created BETWEEN '"+start_date+"' AND '"+end_date+"'"
-    elif has_tax:
-        select_query += " WHERE (taxonomy_bloom IS NOT NULL OR rtti IS NOT NULL)"
+    select_query = """
+    SELECT questions_id, prompts_id, user_id, question, taxonomy_bloom, rtti, exported, date_created
+    FROM questions
+    WHERE 1=1
+    """
 
-    if export_status_type is not 0:
-        if "WHERE" in select_query:
-            select_query += " AND"
-        else:
-            select_query += " WHERE"
+    params = []
+    if has_tax:
+        select_query += " AND (taxonomy_bloom IS NOT NULL OR rtti IS NOT NULL)"
+
+    if start_date and end_date:
+        select_query += " AND date_created BETWEEN ? AND ?"
+        params.append(start_date)
+        params.append(end_date)
+
+    if export_status_type != 0:
         if export_status_type == 1:
-            select_query += " exported == 0"
-        if export_status_type == 2:
-             select_query += " exported > 0"
+            select_query += " AND exported = 0"
+        elif export_status_type == 2:
+            select_query += " AND exported > 0"
 
-    if limit > 0:
-        select_query += " LIMIT "+str(limit)
+    if limit and limit > 0:
+        select_query += " LIMIT ?"
+        params.append(limit)
 
-    cursor.execute(select_query)
-    print(select_query)
+    cursor.execute(select_query, params)
+    print(select_query, params)
     rows = cursor.fetchall()
 
     if len(rows) == 0:

@@ -14,6 +14,8 @@ from model.user import *
 from model.export_vragen import *
 from model.Prompt_overview import *
 
+from werkzeug.security import check_password_hash
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "development-secret-change-this")
 
@@ -93,38 +95,38 @@ def get_db_connection():
 @app.route('/login_screen', methods=['GET', 'POST'])
 def login_screen():
     if request.method == "POST":
-        #Get login from form
+        tries = session.get("logintries", 0)
+        if tries >= 5:
+            flash("te veel mislukte pogingen probeer het later opnieuw", "error")
+            return redirect(url_for("login_screen"))
+
         login = request.form['login']
         password = request.form["password"]
 
         print(login, password)
 
-        #basic validation
         if not login or not password:
-            flash("Login or password is missing. Please try again.", "danger")
+            flash("please try again.", "error")
             return redirect(url_for('login_screen'))
 
-        #log in gegevens
         try:
             database = Database('./databases/database.db')
             cursor, conn = database.connect_db()
 
-            # login and password check
-            cursor.execute('SELECT * FROM users WHERE login=? and password=?', (login, password))
+            cursor.execute('SELECT * FROM users WHERE login=?', (login,))
             user = cursor.fetchone()
-
             conn.close()
 
-            # --
-            if user:
+            if user and check_password_hash(user["password"], password):
                 session['user_id'] = user['user_id']
                 session['username'] = user['login']
                 session["admin"] = user["is_admin"] == 1
-
-                flash('Logged in successfully!', 'success')
+                session["login_tries"] = 0
+                flash('logged in', 'success')
                 return redirect(url_for('toetsvragenScherm'))
             else:
-                flash('Incorrect login or password, please try again.', 'danger')
+                session["login_tries"] = session.get("login_tries", 0) + 1
+                flash('please try again', 'error')
                 return redirect(url_for('login_screen'))
 
         except Exception as e:
@@ -150,6 +152,18 @@ def edit_user(user_id):
             login = request.form['login']
             password = request.form['password']
             is_admin = request.form['is_admin']
+
+            if not display_name or not login:
+                flash("Dit veld mag niet leeg zij", "error")
+                return redirect(url_for("add_user"))
+
+            if password and len(password) < 6:
+                flash("wachtwoord moet minimaal 6 tekens zijn", "error")
+                return redirect(url_for("add_user"))
+
+            if len(login) > 50 or len(display_name) > 100:
+                flash("invoer is te lang", "error")
+                return redirect(url_for("add_user"))
 
             update_user_status = user_model.update_user(user_id, login, password, display_name, is_admin)
             if update_user_status:
