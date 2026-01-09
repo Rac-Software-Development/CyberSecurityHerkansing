@@ -255,8 +255,6 @@ def clean_prompt(prompt_with_error_margin):
     return prompt_with_error_margin.split(" - ", 1)[-1]
 
 def check_user_is_admin():
-    session["admin"] = True #test
-
     if 'admin' not in session:
         return False
     elif not session["admin"]:
