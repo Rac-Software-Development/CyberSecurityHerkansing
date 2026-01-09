@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Export vragen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_export_vragen.css') }}">
+</head>
+<body>
+  {% include 'header.html' %}
+  <h1>Export vragen</h1>
+  <form method="POST">
+    <div class="checkbox-group">
+      <label for="has_tax">Met taxonomie:</label>
+      <input type="checkbox" id="has_tax" name="has_tax">
+    </div>
+
+    <div class="checkbox-group">
+      <label for="between_date">Tussen datum:</label>
+      <input type="checkbox" id="between_date" name="between_date">
+    </div>
+
+    <label for="start_date">Start datum:</label>
+    <input type="date" id="start_date" name="start_date" value="2024-11-26">
+    <br>
+
+    <label for="end_date">Eind datum:</label>
+    <input type="date" id="end_date" name="end_date" value="2024-11-28">
+    <br>
+
+    <label for="export_option">Export optie:</label>
+    <select id="export_option" name="export_option">
+        <option value="0" selected>browser</option>
+        <option value="1">download</option>
+    </select>
+    <br>
+
+    <div class="checkbox-group">
+    <label for="exported">Markeer 'exported':</label>
+    <input type="checkbox" id="exported" name="exported">
+    </div>
+    <br>
+
+    <label for="export_status_type">Selecteer exporttype:</label>
+    <select id="export_status_type" name="export_status_type">
+        <option value="0" selected>beide</option>
+        <option value="1">vragen die nog niet geëxporteerd zijn</option>
+        <option value="2">vragen die al wel geëxporteerd zijn</option>
+    </select>
+    <br>
+
+    <label for="limit">Limiet (aantal vragen):</label>
+    <input type="number" id="limit" name="limit" value="10">
+    <br>
+
+    <input type="submit" value="Export JSON">
+      {{ prompt }}
+  </form>
+</body>
+</html>

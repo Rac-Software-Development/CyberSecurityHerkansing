@@ -1,0 +1,22 @@
+{% extends "base.html.jinja" %}
+{% block content %}
+        <h1>Toon alle vragen</h1>
+        <table class="table">
+            <tr>
+                <th>Vraag</th>
+                <th>Taxonomie</th>
+            </tr>
+            {% for question in questions %}
+                <tr>
+                    <td>{{ question.question }}</td>
+
+                    {% if question.taxonomy_bloom %}
+                        <td>{{ question.taxonomy_bloom }}</td>
+                    {% else %}
+                        {# Als er nog geen Bloom taxonomie is gekoppeld tonen we een knop #}
+                        <td><a href="{{ url_for('show_question', question_id = question.questions_id) }}">Categoriseer naar Bloom</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

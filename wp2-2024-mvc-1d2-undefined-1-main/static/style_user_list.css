@@ -1,0 +1,96 @@
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #555;
+    }
+
+    .user-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 1fr 3fr;
+        gap: 10px;
+        margin: 20px auto;
+        max-width: 1000px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-container.header {
+        font-weight: bold;
+        background-color: #eee;
+    }
+
+    .user-container > div {
+        padding: 5px;
+        word-break: break-word;
+    }
+
+    .button-container {
+        gap: 10px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .button {
+        background-color: #007BFF;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .add-button {
+        margin-top: 20px;
+        display: block;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .next-button{
+        margin-top: 20px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    form {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px;
+    }
+
+    form input[type="text"] {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+    }
+
+    form button {
+        padding: 8px 12px;
+    }

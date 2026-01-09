@@ -1,0 +1,26 @@
+{% extends "base.html.jinja" %}
+{% block content %}
+        <h1>Vraag indexeren, stap 2/2</h1>
+        <p>Vraag: <i>{{ question.question }}</i></p>
+
+        {% if taxonomy_suggestion.niveau %}
+            <p>De AI stelt als taxonomie voor: {{ taxonomy_suggestion.niveau }}</p>
+            <p>Uitleg: <i>{{ taxonomy_suggestion.uitleg }}</i></p>
+        {% else %}
+            <p>De AI heeft geen categorie kunnen vinden</p>
+            <p>Uitleg: <i>{{ taxonomy_suggestion.uitleg }}</i></p>
+        {% endif %}
+
+        <form method="post" action="/question/{{ question.questions_id }}/prompt/{{ prompt_id }}/save">
+            <div class="form-group">
+                <label for="taxonomy">Selecteer taxonomie</label>
+                <select class="form-select" id="taxonomy" name="taxonomy">
+                    {%  for taxonomy in allowed_taxonomies %}
+                        <option value="{{ taxonomy }}" {% if taxonomy == taxonomy_suggestion.niveau %}selected{% endif %}>{{ taxonomy }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" value="{{ taxonomy_suggestion.niveau }}" name="gpt_taxonomy">
+            </div>
+            <button type="submit" class="btn btn-primary">Bewaar taxonomie</button>
+        </form>
+{% endblock %}

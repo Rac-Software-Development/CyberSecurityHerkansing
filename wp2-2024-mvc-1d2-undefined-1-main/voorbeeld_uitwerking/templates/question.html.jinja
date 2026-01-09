@@ -1,0 +1,22 @@
+{% extends "base.html.jinja" %}
+{% block content %}
+        <h1>Vraag indexeren, stap 1/2</h1>
+        <p>Vraag: <i>{{ question.question }}</i></p>
+
+        <!-- Ik geef hier in de "action" het ID mee van de vraag zodat ik die in Python
+        later weer kan opzoeken. Ik had er ook voor kunnen kiezen om het questions_id in een
+        hidden input mee te geven. Beide opties zijn prima. -->
+        <form method="post" action="/question/{{ question.questions_id }}/prompt">
+            <div class="form-group">
+
+                <label for="prompt_id">Selecteer prompt</label>
+                <select class="form-select" id="prompt_id" name="prompt_id">
+                    {% for prompt in prompts %}
+                        <option value="{{ prompt.prompts_id }}">{{ prompt.label }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <button type="submit" class="btn btn-primary">Bepaal taxonomie</button>
+        </form>
+{% endblock %}

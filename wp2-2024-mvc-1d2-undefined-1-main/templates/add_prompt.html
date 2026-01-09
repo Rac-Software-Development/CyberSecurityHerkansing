@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prompt toevoegen</title>
+</head>
+<body>
+<header>
+    <button type="button" label="questions"> Vragen </button>
+    <button type="button" label="AI-prompts"> AI Prompts </button>
+    <button type="button" label="editor"> Redacteuren </button>
+    <hr>
+</header>
+
+<H1> Nieuwe prompt</H1> <br>
+
+<form action="{{ url_for('prompt_input') }}" method="post">
+    <label for="prompt_titel"></label><br>
+    <input type="text" id="prompt_titel" name="prompt_title" placeholder="Titel" required><br><br>
+
+    <label for="prompt"></label><br>
+    <textarea id="prompt" name="prompt" rows="10" cols="60" placeholder="prompt" required></textarea><br><br>
+
+    <button type="submit" label="opslaan">opslaan</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Toetsvragen</title>
+  <style>
+    #questions {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #questions td, #questions th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #questions tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #questions tr:hover {background-color: #ddd;}
+    
+    #questions th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0fae1e;
+      color: white;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 25px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(22px);
+      -ms-transform: translateX(22px);
+      transform: translateX(22px);
+    }
+
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+{% include 'header.html' %}
+<h2>Toetsvragen Lijst</h2>
+<br>
+<form method="get" action="/toetsvragenScherm" id="searchForm">
+  Zoekwoord: <input
+    type="text"
+    id="zoekWoord"
+    name="zoekWoord"
+    value="{{ zoekwoord|default('') }}"
+    placeholder="Zoek een vraag..."
+    autocomplete="off"
+  >
+</form> | <label for="vak">Vak</label>
+  <select name="vak" id="vak">
+    <option value="biologie">Biologie</option>
+    <option value="engels">Engels</option>
+      <option value="nederlands">Nederlands</option>
+  </select> | Toon vragen met taxonomy <label class="switch">
+  <input type="checkbox" id="taxonomyFilter">
+  <span class="slider round"></span>
+</label> | <button><a href="/toetsvragenScherm">Ververs</a></button>
+<br>
+<table id="questions">
+  <tr>
+      <th>Question</th>
+      <th>Taxonomy_bloom</th>
+      <th>RTTI</th>
+      <th>Exported</th>
+      <th>Date_created</th>
+      <th>Index</th>
+  </tr>
+  {% for question in all_questions %}
+  <tr>
+    <td>{{question.question}}</td>
+      {% if question.taxonomy_bloom %}
+          <td>{{ question.taxonomy_bloom}}</td>
+        {% else %}
+          <td>Geen informatie beschikbaar</td>
+        {% endif %}
+      <td>{{question.rtti}}</td>
+      <td>{{question.exported}}</td>
+      <td>{{question.date_created}}</td>
+      <td>
+          <a href="{{ url_for('index_page', question_id=question.questions_id) }}">
+            <button type="button">Indexeer vraag</button>
+          </a>
+        </td>
+  </tr>
+  {% endfor %}
+</table>
+<br>
+<p>
+  {% if has_previous %}
+    <a href="?page={{ page - 1 }}&zoekWoord={{ zoekwoord }}">&#x3C; Vorige 10</a>
+  {% else %}
+    &#x3C; Vorige 10
+  {% endif %}
+
+  -
+
+  {% if has_next %}
+    <a href="?page={{ page + 1 }}&zoekWoord={{ zoekwoord }}">Volgende 10 &#x3E;</a>
+  {% else %}
+    Volgende 10 &#x3E;
+  {% endif %}
+</p>
+
+<br>
+<button>Expoteer naar Test-Correct</button>
+
+<script>
+  const zoekWoordInput = document.getElementById('zoekWoord');
+  const vakSelect = document.getElementById('vak');
+  const searchForm = document.getElementById('searchForm');
+  let timeout = null;
+
+  zoekWoordInput.addEventListener('input', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      searchForm.submit();
+    }, 500);
+  });
+
+  vakSelect.addEventListener('change', () => {
+    searchForm.submit();
+  });
+
+  const taxonomyFilter = document.getElementById('taxonomyFilter');
+  const urlParams = new URLSearchParams(window.location.search);
+  taxonomyFilter.checked = urlParams.get('taxonomy') === 'true';
+
+  taxonomyFilter.addEventListener('change', () => {
+    if (taxonomyFilter.checked) {
+      urlParams.set('taxonomy', 'true');
+    } else {
+      urlParams.delete('taxonomy');
+    }
+    window.location.search = urlParams.toString();
+  });
+</script>
+
+  <h3>Upload a JSON</h3>
+    <form id="uploadForm">
+      <input type="file" id="jsonFile" name="file" accept=".json">
+      <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <div id="output"></div>
+  <br>
+    <button><a href="/export_vragen">Exporteer vragen naar JSON</a></button>
+  <br>
+
+    <script>
+      function uploadFile() {
+        const fileInput = document.getElementById('jsonFile');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+          document.getElementById('output').innerHTML = "Geen file gevonden.";
+          return;
+        }
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        fetch('/import', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById('output').innerHTML = "Error: " + data.error;
+          } else {
+            document.getElementById('output').innerHTML = 
+            "Processed Data: " + JSON.stringify(data.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      }
+    </script>
+  </body>
+  </html>

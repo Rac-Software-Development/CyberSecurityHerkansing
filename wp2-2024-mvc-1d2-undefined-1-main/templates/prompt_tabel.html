@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompts</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td{
+        border: 1px solid black;
+    }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <button type="button" onclick="window.location.href='/toetsvragenScherm.html'" label="questions"> Vragen </button>
+    <button type="button" label="AI-prompts"> AI Prompts </button>
+    <button type="button" onclick="window.location.href='user_list.html'" label="editor"> Redacteuren </button>
+    <hr>
+</header>
+<h1>AI Prompts</h1> <br>
+<table id="prompt">
+    <thead>
+    <tr>
+        <th> Prompt </th>
+        <th> Redacteur </th>
+        <th> Toetsvragen ingedeeld </th>
+        <th> Correct </th>
+        <th> Acties </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for prompt in all_prompts%}
+    <tr>
+        <td>{{prompt.prompt}}</td>
+        <td>{{prompt.redacteur}}</td>
+        <td>{{prompt.toetsvragen}}</td>
+        <td>{{prompt.correct}}</td>
+        <td> <button type="button" label="?"> Details </button> </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table> <br>
+
+<button type="button" onclick="window.location.href='/prompt_input'" label="add-prompt" formmethod="POST"> nieuwe prompt toevoegen </button>
+
+</body>
+</html>

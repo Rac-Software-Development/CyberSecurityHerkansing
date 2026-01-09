@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wijzig Redacteur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+            width: 100%;
+            background-image: linear-gradient(90deg,#0038c6,#2467fa);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+            background-image: linear-gradient(90deg,#1e8f35,#44cb5e)
+        }
+
+        form > * {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        form br {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Wijzig redacteur</h1>
+
+<form method="POST">
+    <label for="display_name">Naam:</label>
+    <input type="text" id="display_name" name="display_name" value="{{ user.display_name }}" required>
+
+    <label for="login">Email/Login:</label>
+    <input type="text" id="login" name="login" value="{{ user.login }}" required>
+
+    <label for="password">Wachtwoord:</label>
+    <input type="text" id="password" name="password" value="{{ user.password }}" required>
+
+    <label for="is_admin">Admin:</label>
+    <select id="is_admin" name="is_admin">
+        <option value="0" {% if user.is_admin == 0 %} selected {% endif %}>0 - Nee</option>
+        <option value="1" {% if user.is_admin == 1 %} selected {% endif %}>1 - Ja</option>
+    </select>
+
+    <input type="submit" value="Wijzigingen opslaan">
+</form>
+</body>
+</html>

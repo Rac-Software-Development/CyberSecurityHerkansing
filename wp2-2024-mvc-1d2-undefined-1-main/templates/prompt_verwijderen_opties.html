@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prompt Verwijderen Opties</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+            width: 100%;
+            background-image: linear-gradient(90deg,#0038c6,#2467fa);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+            background-image: linear-gradient(90deg,#1e8f35,#44cb5e)
+        }
+
+        form > * {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        form br {
+            margin-bottom: 10px;
+        }
+                .button-container {
+            gap: 10px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        .button {
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            background-image: linear-gradient(90deg, #0038c6, #2467fa);
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+            background-image: linear-gradient(90deg, #1e8f35, #44cb5e);
+        }
+
+        .add-button {
+            margin-top: 20px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Verwijder Prompt</h1>
+
+<form method="POST">
+    <label>prompts_id:</label>
+    {{ prompt.prompts_id }}
+
+    <label>prompt:</label>
+    <p>{{ prompt.prompt }}</p>
+    <label>Gekoppelde vragen aan deze prompt:</label>
+    {{ prompt.question_count }}
+
+    <label for="delete_option">Verwijder de prompt met de gekoppelde vragen?:</label>
+    <select name="delete_option" id="delete_option">
+        <option value="0" >Nee</option>
+        <option value="1" >Ja</option>
+    </select>
+
+    <input type="submit" value="Verwijder prompt">
+</form>
+ <a class="button" href="/prompt_verwijderen" > Terug naar prompts </a>
+</body>
+</html>

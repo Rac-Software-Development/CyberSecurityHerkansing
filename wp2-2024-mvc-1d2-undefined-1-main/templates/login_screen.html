@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #81c784, #ffffff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #4a4a4a;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+
+        label {
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, #388e3c, #66bb6a);
+            transform: scale(1.05);
+        }
+
+        input[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+
+        .show-password {
+            font-size: 14px;
+            color: #007bff;
+            cursor: pointer;
+            text-align: left;
+            display: inline-block;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        /* Forgot Password Link */
+        .reset-link {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .reset-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .reset-link a:hover {
+            text-decoration: underline;
+        }
+
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            input[type="submit"] {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login to Your Account</h2>
+        <form method="POST">
+            <label for="login">Email/Login</label>
+            <input type="text" name="login" placeholder="Enter your email or username" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="myInput" placeholder="Enter your password" required>
+
+            <div style="margin-bottom: 15px; text-align: left;">
+                <input type="checkbox" onclick="myFunction()">
+                <span class="show-password">Show Password</span>
+            </div>
+
+            <input type="submit" value="Login">
+
+            <div class="reset-link">
+                <a href="#">Forgot password?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("myInput");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
+</body>
+</html>

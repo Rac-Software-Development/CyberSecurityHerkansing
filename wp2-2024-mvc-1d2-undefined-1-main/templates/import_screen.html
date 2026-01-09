@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Vragen importer</title>
+</head>
+<body>
+    <h1>Upload a JSON</h1>
+    <form id="uploadForm">
+        <input type="file" id="jsonFile" name="file" accept=".json">
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <div id="output"></div>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('jsonFile');
+            const file = fileInput.files[0];
+
+            let outputDiv =  document.getElementById('output')
+
+            if (!file) {
+               outputDiv.innerHTML = "Geen file gevonden.";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/import', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.log(data)
+
+                    let tableHTML = `
+                        <table border="1" style="border-collapse: collapse; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Question ID</th>
+                                    <th>Error</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    // Loop through the errors in data.details
+                    data.details.forEach(detail => {
+                        tableHTML += `
+                            <tr>
+                                <td>${detail.question_id || 'N/A'}</td>
+                                <td>${detail.error}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += `
+                            </tbody>
+                        </table>
+                    `;
+
+                    outputDiv.innerHTML = tableHTML;
+                } else {
+                    outputDiv.innerHTML = "Successful";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redacteuren overzicht</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_user_list.css') }}">
+</head>
+<body>
+    {% include 'header.html' %}
+    <h1>Redacteuren overzicht</h1>
+    <form method="POST">
+        <input id="search-input" type="text" name="search" placeholder="Zoek op naam redacteur (Display Name)...">
+        <button type="submit" class="button">Zoeken</button>
+        <a href="/list_users" class="button">Herstel Zoekopdracht</a>
+    </form>
+
+    <!-- Kolomkoppen -->
+    <div class="user-container header">
+        <div>User ID</div>
+        <div>Login</div>
+        <div>Password</div>
+        <div>Display Name</div>
+        <div>Date Created</div>
+        <div>Is Admin</div>
+        <div>Acties</div>
+    </div>
+
+    <!-- Gebruikersdata -->
+    {% for user in all_users %}
+        <div class="user-container">
+            <div>{{ user.user_id }}</div>
+            <div>{{ user.login }}</div>
+            <div>{{ user.password }}</div>
+            <div>{{ user.display_name }}</div>
+            <div>{{ user.date_created }}</div>
+            <div>{{ user.is_admin }}</div>
+            <div class="button-container">
+                <a href="/edit_user/{{user.user_id}}" class="button">Wijzig</a>
+                <a href="/delete_user/{{user.user_id}}" class="button">Verwijder</a>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="next-button">
+    {% if has_previous %}
+        <a class="button" href="?page={{ page - 1 }}">&#x3C; Vorige 10</a>
+    {% endif %}
+
+    <span class="current-page"> Page {{ page }} </span>
+
+    {% if has_next %}
+        <a class="button" href="?page={{ page + 1 }}">Volgende 10 &#x3E;</a>
+    {% endif %}
+    </div>
+    <a href="/add_user" class="button add-button">Voeg een nieuwe gebruiker toe</a>
+    <a href="/add_test_user" class="button add-button">Voeg test gebruiker toe</a>
+</body>
+</html>

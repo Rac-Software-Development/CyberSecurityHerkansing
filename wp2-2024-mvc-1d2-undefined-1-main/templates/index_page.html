@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vraag Indexeren</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            width: 100%;
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .container {
+            margin: 20px auto;
+            max-width: 800px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .container-header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <div class="container">
+        <div class="container-header" style="display: flex; justify-content: space-between; align-items: center;">
+            Vraag Indexeren
+            <div>
+            <a href="{{ url_for('toetsvragenScherm') }}">
+                <button style="background-color: #cccccc; color: black;" type="button">Terug naar vragen</button>
+            </a>
+            </div>
+        </div>
+
+        <h2>Vraag indexeren naar taxonomie</h2>
+        <p><em>{{ question.question }}</em></p>
+
+        {% if question.taxonomy_bloom %}
+            <div>
+                <h3>Taxonomie Niveau</h3>
+                <p><strong>Niveau:</strong> {{ question.taxonomy_bloom.niveau }}</p>
+                <p><strong>Uitleg:</strong> {{ question.taxonomy_bloom.uitleg }}</p>
+            </div>
+        {% endif %}
+
+        {% if question.rtti %}
+            <div>
+                <h3>RTTI Resultaat</h3>
+                <p><strong>Resultaat:</strong> {{ question.rtti }}</p>
+            </div>
+        {% endif %}
+
+        <div class="info-section">
+            <label for="prompt-select">Prompt:</label>
+            <select id="prompt-select">
+                {% for key, value in models.items() %}
+                    <option value="{{ key }}">{{ key.replace('_', ' ').title() }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <form id="update-form" method="POST" action="{{ url_for('generate_proposal') }}">
+            <input type="hidden" name="question_id" value="{{ question.questions_id }}">
+            <input type="hidden" name="previous_prompt" value="{{ previous_prompt }}">
+            {% if proposal is not none %}
+                <h3>Voorgestelde Prompt</h3>
+
+                <p><strong>Niveau:</strong> {{ proposal.niveau }}</p>
+                <p><strong>Uitleg:</strong> {{ proposal.uitleg }}</p>
+
+                <form method="post">
+                    <button type="submit" name="status" value="approved" formaction="{{ url_for('proposal_status', status='approved') }}" style="background-color: green;">✔</button>
+                    <button type="submit" name="status" value="rejected" formaction="{{ url_for('proposal_status', status='rejected') }}" style="background-color: red;">X</button>
+                </form>
+            {% else %}
+                <label for="prompt">Choose or Enter a Prompt:</label>
+                <select id="prompt" name="prompt">
+                    {% for prompt in prompts %} 
+                        <option value="{{ prompt.prompt }}" title="Fout Margin: {{ prompt.error_margin }}% - {{ prompt.prompt }}">
+                            Fout Margin: {{ prompt.error_margin }}% - {{ prompt.prompt[:50] }}...
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Genereer voorstel </button>
+            {% endif %}
+
+        </form>
+
+    </div>
+</body>
+</html>

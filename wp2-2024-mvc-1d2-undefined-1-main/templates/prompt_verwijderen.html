@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompts</title>
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            max-width: 900px; /* Maximale breedte van de tabel */
+            border-collapse: collapse;
+            margin: 0 auto; /* Center de tabel */
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            word-wrap: break-word; /* Laat de tekst binnen de cellen wrappen */
+            white-space: normal; /* Zorgt ervoor dat tekst zich op meerdere regels verdeelt */
+            max-width: 300px; /* Zet een maximale breedte voor de cellen */
+        }
+
+        td {
+            word-wrap: break-word;
+            max-width: 300px; /* Maximaliseer de breedte per cel */
+            overflow-wrap: break-word; /* Zorg ervoor dat lange woorden kunnen breken */
+        }
+
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<table id="prompt">
+    <h1>Prompt Verwijderen</h1> <br>
+    <thead>
+    <tr>
+        <th> Prompt </th>
+        <th> Redacteur </th>
+        <th> Acties </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for prompt in all_prompts%}
+    <tr>
+        <td>{{prompt.prompt}}</td>
+        <td>{{prompt.redacteur}}</td>
+        <td> <a type="button" href="/delete_prompt/{{prompt.prompts_id}}" > Verwijderen </a> </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table> <br>
+</body>
+</html>
