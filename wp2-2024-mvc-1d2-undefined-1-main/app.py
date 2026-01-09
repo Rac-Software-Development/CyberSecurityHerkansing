@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 from flask import *
 
@@ -14,7 +15,7 @@ from model.export_vragen import *
 from model.Prompt_overview import *
 
 app = Flask(__name__)
-app.secret_key = "geheime_sleutel"
+app.secret_key = os.getenv("SECRET_KEY", "development-secret-change-this")
 
 
 @app.route('/')
